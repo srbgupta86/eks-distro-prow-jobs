@@ -20,9 +20,9 @@
 
 presubmits:
   aws/eks-distro:
-  - name: kubernetes-1-36-test-presubmit
+  - name: kubernetes-1-37-test-presubmit
     always_run: false
-    run_if_changed: "projects/kubernetes/kubernetes/1-36/(GIT_TAG|patches|GOLANG_VERSION)"
+    run_if_changed: "projects/kubernetes/kubernetes/1-37/(GIT_TAG|patches|GOLANG_VERSION)"
     max_concurrency: 10
     cluster: "prow-presubmits-cluster"
     skip_report: false
@@ -45,12 +45,12 @@ presubmits:
         - >
           trap 'touch /status/done && rm -rf /home/prow/go/src/' EXIT
           &&
-          make test -C $PROJECT_PATH
+          if make check-for-supported-release-branch -C $PROJECT_PATH; then make test -C $PROJECT_PATH; fi
         env:
         - name: PROJECT_PATH
           value: "projects/kubernetes/kubernetes"
         - name: RELEASE_BRANCH
-          value: "1-36"
+          value: "1-37"
         resources:
           requests:
             memory: "32Gi"
